@@ -1,9 +1,21 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from config import validate_config, FRONTEND_URL
-import os
-from dotenv import load_dotenv
+from config import FRONTEND_URL, validate_config
 
-load_dotenv()
-print("SPOTIFY_CLIENT_ID:", os.getenv("SPOTIFY_CLIENT_ID"))
-print("GEMINI_API_KEY:", os.getenv("GEMINI_API_KEY"))
+# Validate the configuration at startup
+validate_config()
+
+app = FastAPI(title="Moodlist API", version="1.0")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[FRONTEND_URL],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
+@app.get("/health")
+def health():
+    return {"status": "ok"}
