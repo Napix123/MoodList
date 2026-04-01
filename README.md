@@ -1,1 +1,1 @@
-# MoodList---AI-Powered-Spotify-Playlist-Generator
+# MoodList
