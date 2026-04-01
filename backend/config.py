@@ -12,6 +12,6 @@ FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:5173")
 SPOTIFY_SCOPES = "user-library-read playlist-modify-public playlist-modify-private"
 
 def validate_config():
-    missing = [variable for variable in [SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET, GEMINI_API_KEY] if not os.getenv(variable)]
+    missing = [v for v in [SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET, GEMINI_API_KEY] if not os.getenv(v)]
     if missing:
         raise EnvironmentError(f"Missing required environment variables: {', '.join(missing)}")
