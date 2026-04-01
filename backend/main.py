@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from config import FRONTEND_URL, validate_config
+from routers import auth
 
 # Validate the configuration at startup
 validate_config()
@@ -15,7 +16,4 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
-@app.get("/health")
-def health():
-    return {"status": "ok"}
+app.include_router(auth.router)

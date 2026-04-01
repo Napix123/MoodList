@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from fastapi.respones import RedirectResponse
+from fastapi.responses import RedirectResponse
 from services.spotify import create_spotify_oauth
 from config import FRONTEND_URL
 
