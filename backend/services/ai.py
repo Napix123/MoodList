@@ -1,0 +1,32 @@
+import google.generativeai as genai
+import json
+from config import GEMINI_API_KEY
+
+genai.configure(api_key=GEMINI_API_KEY)
+model = genai.GenerativeModel('gemini-2.0-pro')
+
+def curate_playlist(prompt: str, songs: list):
+    songs_list = "\n".join(f"{i}: {s['title']} by {s['artist']}" for i, s in enumerate(songs))
+    gemini_prompt = f"""
+    You are a music curator, creating a playlist for the user. Given a user's vibe description and their liked songs,
+    select 20-30 songs that best match the vibe. Return ONLY valid JSON, no markdown, no explanations, no code blocks.
+    
+    Format:
+    {{
+        "playlist_name": "short evocative name for the playlist",
+        "description": "1-2 sentences describing the vibe of the playlist",
+        "tracks": [
+            {{"index": 0, "reason": "max 10 words why this fits}}
+        ]
+    }}
+    
+    User's vibe description: "{prompt}"
+    
+    Liked songs:
+    {songs_list}
+    """
+    
+    response = model.generate_content(gemini_prompt)
+    text = response.text.strip()
+    text = text.replace("```json", "").replace("```", "").strip()
+    return json.loads(text)
