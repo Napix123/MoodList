@@ -3,7 +3,7 @@ from services.spotify import get_spotify_client, fetch_user_liked_songs
 
 router = APIRouter(prefix="/songs", tags=["songs"])
 
-@router.get("/liked_songs")
+@router.get("/liked")
 def get_liked_songs(request: Request):
     token_info = request.session.get("token_info")
     if not token_info:
