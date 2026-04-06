@@ -2,6 +2,7 @@ from fastapi import APIRouter, Request, HTTPException
 from pydantic import BaseModel
 from services.spotify import get_spotify_client, fetch_user_liked_songs, refresh_token
 from services.ai import curate_playlist
+from services.playlist_creator import create_playlist
 
 router = APIRouter(prefix="/playlists", tags=["playlists"])
 
@@ -22,13 +23,22 @@ async def generate_playlist(request: Request, body: PromptRequest):
     liked_songs = await fetch_user_liked_songs(sp)
     result = await curate_playlist(body.prompt, liked_songs)
     
-    tracks = []
-    for t in result["tracks"]:
-        song = liked_songs[t["index"]]
-        tracks.append({**song, "reason": t["reason"]}) 
-        
+    track_ids = [liked_songs[t["index"]]["id"] for t in result["tracks"]]
+    tracks = [
+        {**liked_songs[t["index"]], "reason": t["reason"]} for t in result["tracks"]
+    ]
+    
+    playlist_info = await create_playlist(
+        sp=sp,
+        playlist_name=result["playlist_name"],
+        description=result["description"],
+        track_ids=track_ids
+    )
+    
     return {
-        "playlist_name": result["playlist_name"],
+        "playlist_name": playlist_info["playlist_name"],
+        "playlist_url": playlist_info["playlist_url"],
+        "track_count": playlist_info["track_count"],
         "description": result["description"],
         "tracks": tracks
     }
