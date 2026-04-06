@@ -14,7 +14,7 @@ def create_spotify_oauth():
 def get_spotify_client(token_info: dict):
     return spotipy.Spotify(auth=token_info['access_token'])
 
-def fetch_user_liked_songs(sp: spotipy.Spotify):
+async def fetch_user_liked_songs(sp: spotipy.Spotify):
     liked_songs = []
     request_limit = 50
     offset = 0
@@ -39,3 +39,12 @@ def fetch_user_liked_songs(sp: spotipy.Spotify):
         offset += request_limit
         
     return liked_songs
+
+def refresh_token(token_info: dict):
+    sp_oauth = create_spotify_oauth()
+    print("TOKEN KEYS:", token_info.keys())
+    print("IS EXPIRED:", sp_oauth.is_token_expired(token_info))
+    if sp_oauth.is_token_expired(token_info):
+        token_info = sp_oauth.refresh_access_token(token_info['refresh_token'])
+    return token_info   
+    
