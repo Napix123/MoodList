@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
-from routers import auth, songs
+from routers import auth, songs, playlist
 from config import FRONTEND_URL, validate_config, SESSION_SECRET_KEY
 
 # Validate the configuration at startup
@@ -23,5 +23,8 @@ app.add_middleware(
 def health():
     return {"status": "ok"}
 
+
+
 app.include_router(auth.router)
 app.include_router(songs.router)
+app.include_router(playlist.router)
