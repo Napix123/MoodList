@@ -10,7 +10,7 @@ export interface Track {
     title: string;
     artist: string;
     album: string;
-    reason: string;
+    reason?: string; // optional - it's only present after the AI curation
 }
 
 export interface Playlist {
@@ -21,9 +21,3 @@ export interface Playlist {
     tracks: Track[];
 }
 
-export interface Song {
-    id: string;
-    title: string;
-    artist: string;
-    album: string;
-}
