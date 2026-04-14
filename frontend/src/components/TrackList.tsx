@@ -29,3 +29,5 @@ const TrackList = ({ tracks }: Props) => {
         </div>
     );
 };
+
+export default TrackList;
