@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { generatePlaylist } from "../api/client";
 import type { Playlist } from "../types";
 import PromptBar from "../components/PromptBar";
@@ -7,14 +7,24 @@ import PromptBar from "../components/PromptBar";
 const Library = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [searchParams] = useSearchParams();
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const token = searchParams.get("token");
+        if (token) {
+            localStorage.setItem("token_info", token);
+            // Clean up the URL by removing the token query parameter
+            navigate("/library", { replace: true });
+        }
+    },[]);
 
     const handleGenerate = async (prompt: string) => {
         setLoading(true);
         setError(null);
         try {
             const playlist: Playlist = await generatePlaylist(prompt);
-            navigate("/result", { state: ( playlist ) });
+            navigate("/result", { state: { playlist } });
         } catch (err) {
             setError("Failed to generate playlist. Please try again.");
         } finally {
