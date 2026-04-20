@@ -1,0 +1,12 @@
+$kind: http-request
+url: http://127.0.0.1:8000/playlists/generate
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: json
+  content: |-
+    {
+        "prompt": "late night drive through the city"
+    }
+order: 3542157167605096

@@ -2,6 +2,8 @@ from fastapi import APIRouter, Request
 from fastapi.responses import RedirectResponse
 from services.spotify import create_spotify_oauth
 from config import SPOTIFY_REDIRECT_URI, FRONTEND_URL
+import base64
+import json
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -17,8 +19,9 @@ def login():
 def callback(request: Request, code: str):
     spotify_oauth = create_spotify_oauth()
     token_info = spotify_oauth.get_access_token(code)
-    request.session["token_info"] = token_info
-    return RedirectResponse(f"{FRONTEND_URL}/library")
+    
+    token_b64 = base64.b64encode(json.dumps(token_info).encode()).decode()
+    return RedirectResponse(f"{FRONTEND_URL}/library?token={token_b64}")
 
 @router.get("/logout")
 def logout(request: Request):

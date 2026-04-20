@@ -1,3 +1,6 @@
+import base64
+import json
+
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 from config import (SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET, SPOTIFY_REDIRECT_URI, SPOTIFY_SCOPES)
@@ -13,6 +16,17 @@ def create_spotify_oauth():
     
 def get_spotify_client(token_info: dict):
     return spotipy.Spotify(auth=token_info['access_token'])
+
+def get_token_from_header(request) -> dict | None:
+    token_b64 = request.headers.get("X-Token")
+    if not token_b64:
+        return None
+    try:
+        token_info = json.loads(base64.b64decode(token_b64).decode())
+        return token_info
+    except Exception:
+        return None
+    
 
 async def fetch_user_liked_songs(sp: spotipy.Spotify):
     liked_songs = []
